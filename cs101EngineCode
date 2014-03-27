@@ -1,0 +1,57 @@
+#// This is a code sample from the CS101 coursework of Peter Scheyer. Written in January and February of 2014,
+#// this code is likely rife with errors and bugs and probably doesn't work and will need to be rewritten for
+#// the specific purpose of inclusion in any worthwhile project.
+#// that said, it is a place to start. And I have started there. //PJS 20140327 2157h//
+
+#the below is my code from the CS101 homework where it asks you to finish the crawl_web procedure.
+
+#Finish crawl web
+
+def get_page(url):
+    # The simulated get_page procedure went here. I deleted it to clean up my code.
+    # The first version of my app will only be crawling my local copy of wikipedia.
+    # I'll need to figure out how to access that file and the formatting conventions there at some point.
+    # for now i'll do what i know and then later i can incorporate the wikipedia db, which i think is in html.
+    #try:
+    #   if url == "http://xkcd.com/353":
+    #        return  except:
+    #    return ""
+    #return ""
+
+def get_next_target(page):                     #gets the next target page address denoted by '<a href=' out of the page
+    start_link = page.find('<a href=')         #Designed for inclusion in get_all_links
+    if start_link == -1:                       #
+        return None, 0
+    start_quote = page.find('"', start_link)
+    end_quote = page.find('"', start_quote + 1)
+    url = page[start_quote + 1:end_quote]
+    return url, end_quote
+
+def union(p,q):
+    for e in q:
+        if e not in p:
+            p.append(e)
+
+
+def get_all_links(page):
+    links = []
+    while True:
+        url,endpos = get_next_target(page)
+        if url:
+            links.append(url)
+            page = page[endpos:]
+        else:
+            break
+    return links
+
+def crawl_web(seed):
+    tocrawl = [seed]
+    crawled = []
+    while tocrawl:
+        page = tocrawl.pop()
+        if page not in crawled:
+           page_links = get_all_links(get_page(page)) 
+           union(tocrawl, page_links)
+           crawled.append(page)
+            
+    return crawled
